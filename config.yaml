@@ -1,0 +1,15 @@
+me:
+  email: email
+hegdeflutes:
+  email: email
+server:
+  port: 3000
+  cors: none
+  env: dev
+  apiKey: test
+dbconfig:
+  uri: test
+  dbname: test
+tradecredconfig:
+  base: test
+  refreshtoken: test

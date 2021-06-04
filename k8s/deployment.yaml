@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tradecred-helper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tradecred-helper
+  template:
+    metadata:
+      labels:
+        app: tradecred-helper
+    spec:
+      containers:
+      - name: tradecred-helper
+        image: okteto.dev/tradecred-helper:latest
+        ports:
+        - containerPort: 8080

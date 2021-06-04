@@ -1,0 +1,24 @@
+on: [push]
+
+name: okteto
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@master
+
+    - name: Login
+      uses: okteto/login@master
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+    
+    - uses: okteto/namespace@master
+
+    - name: Deploy Application
+      uses: okteto/pipeline@master
+      with:
+        timeout: 10m
+        name: tradecred-helper
+        namespace: misc-mahendrahegde

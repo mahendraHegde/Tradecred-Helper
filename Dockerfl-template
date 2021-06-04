@@ -1,0 +1,18 @@
+FROM golang:alpine3.13 as builder
+ADD ./ ./
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+ENV GITHUB_USER=$GITHUB_USER
+ENV DBCONFIG_DBNAME=$DBCONFIG_DBNAME
+ENV DBCONFIG_URI=$DBCONFIG_URI
+ENV SERVER_CORS=$SERVER_CORS
+ENV CONTENTFUL_URI=$CONTENTFUL_URI
+ENV CONTENTFUL_DELIVERYTOKEN=$CONTENTFUL_DELIVERYTOKEN
+ENV CONTENTFUL_WEBHOOKAPIKEY=$CONTENTFUL_WEBHOOKAPIKEY
+RUN unset GOPATH && \
+ go env GO111MODULE=on && \
+ go env -w GOPRIVATE=github.com/mahendraHegde/* &&\
+ apk add git && \
+ git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/mahendraHegde".insteadOf "https://github.com/mahendraHegde" && \
+ go get && go build -o tradecredhelper
+EXPOSE 8080
+CMD ./tradecredhelper

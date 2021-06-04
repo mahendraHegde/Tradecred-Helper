@@ -1,0 +1,4 @@
+deploy:
+  - envsubst < Dockerfl-template > Dockerfile
+  - okteto build -t okteto.dev/tradecred-helper:latest
+  - kubectl apply -f k8s
