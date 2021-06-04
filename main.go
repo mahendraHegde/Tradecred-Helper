@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -19,6 +20,8 @@ func main() {
 	if err != nil {
 		fmt.Printf("Unable to read config, %v", err)
 	}
+	log.Println(config.Server, ">>>>>>")
+
 	r := gin.Default()
 	// addCorsRules(r, config)
 	wire, err := buildDependencies(config, r)
