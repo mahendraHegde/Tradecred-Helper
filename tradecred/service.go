@@ -30,8 +30,9 @@ func tokenRefresh(obj *TradeCred) {
 				timer.Stop()
 				return
 			}
+		} else {
+			log.Println("Token updated Successfuly >>>>>>>")
 		}
-		log.Println("Token updated Successfuly >>>>>>>")
 	}
 }
 
