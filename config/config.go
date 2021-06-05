@@ -13,6 +13,14 @@ type Configurations struct {
 	Me              MeConfig
 	DBConfig        DBConfig
 	TradeCredConfig TradeCredConfig
+	CallMeBot       CallMeBot
+}
+
+//CallMeBot exported
+type CallMeBot struct {
+	WhatsApp struct {
+		ApiKey, Phone, Base string
+	}
 }
 
 //TradeCredConfig exported

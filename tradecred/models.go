@@ -3,6 +3,7 @@ package tradecred
 type Deal struct {
 	ID         string
 	Attributes struct {
+		Name               string
 		Code               string
 		Type               string
 		State              string

@@ -13,3 +13,8 @@ dbconfig:
 tradecredconfig:
   base: test
   refreshtoken: test
+callmebot:
+  whatsapp:
+    apikey: test
+    base: https://api.callmebot.com/whatsapp.php
+    phone: 12839021

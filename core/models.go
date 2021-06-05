@@ -1,9 +1,10 @@
 package core
 
 type GetDealsQS struct {
-	Days      int     `form:"days"`
-	MaxAmount float64 `form:"maxAmount"`
-	Rate      float64 `form:"rate"`
+	Days             int     `form:"days"`
+	MaxAmount        float64 `form:"maxAmount"`
+	Rate             float64 `form:"rate"`
+	SendNotification bool    `form:"sendNotification"`
 }
 type Credentials struct {
 	Email, Password string
