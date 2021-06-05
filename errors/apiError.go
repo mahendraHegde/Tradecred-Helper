@@ -6,7 +6,7 @@ import "github.com/gin-gonic/gin"
 type ApiError struct {
 	Status  int
 	Message string
-	Meta    interface{}
+	Meta    interface{} `json:",omitempty"`
 }
 
 func (error ApiError) Error() string {

@@ -2,6 +2,7 @@ package tradecred
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -21,7 +22,7 @@ type TradeCred struct {
 func tokenRefresh(obj *TradeCred) {
 	timer := time.NewTicker(time.Minute * 30)
 	for range timer.C {
-		_, err := obj.updateToken("", "")
+		_, err := obj.UpdateToken("", "")
 		if err != nil {
 			log.Println("Failed to update token :=", err)
 			obj.tokenUpdateFailCtr++
@@ -43,7 +44,7 @@ func NewTradeCred(config *config.TradeCredConfig) *TradeCred {
 	return obj
 }
 
-func (this *TradeCred) updateToken(email, password string) (string, error) {
+func (this *TradeCred) UpdateToken(email, password string) (string, error) {
 	values := map[string]string{"refresh_token": this.config.RefreshToken, "grant_type": "refresh_token", "otp_verification_id": "null"}
 	if email != "" && password != "" {
 		values = map[string]string{"email": email, "password": password, "grant_type": "password", "otp_verification_id": "null"}
@@ -80,10 +81,9 @@ func (this *TradeCred) updateToken(email, password string) (string, error) {
 	return this.token, nil
 }
 
-func (this *TradeCred) GetDeals(page int, email, password string) ([]Deal, error) {
-	this.updateToken(email, password)
+func (this *TradeCred) GetDeals(ctx context.Context, page int) ([]Deal, error) {
 	url := this.config.Base + "/deals?page=" + strconv.Itoa(page) + "&resource_path=deals&merge_lease_deal=true&type=deal"
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -112,4 +112,45 @@ func (this *TradeCred) GetDeals(page int, email, password string) ([]Deal, error
 	return res.Data, nil
 }
 
-//TRumzVy4DLKTLitnbGlS-oK72-82QxdcirJ8gAhodYY
+func (this *TradeCred) GetLiquidationRequests(ctx context.Context) ([]Deal, error) {
+	url := this.config.Base + "/deal_transaction_liquidations?page=1&aasm_state=requested"
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("Authorization", "Bearer "+this.token)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		var meta map[string]interface{}
+		json.NewDecoder(resp.Body).Decode(&meta)
+		return nil, errors.ApiError{
+			Status:  resp.StatusCode,
+			Message: "Error while connecting to TradeCred",
+			Meta:    meta,
+		}
+	}
+	var res LiquidationReq
+	json.NewDecoder(resp.Body).Decode(&res)
+	for i := 0; i < len(res.Data); i++ {
+		res.Data[i].Attributes.Days = res.Data[i].Attributes.DaysSecondary
+		res.Data[i].Attributes.MinAmount = res.Data[i].Attributes.MinAmountSecondary
+		res.Data[i].Attributes.Rate = res.Data[i].Attributes.RateSecondary
+		res.Data[i].Attributes.State = "in_progress"
+		id := res.Data[i].Relationships.DealTransaction.Data.ID
+		for _, inc := range res.Included {
+			if inc.ID == id {
+				res.Data[i].Attributes.Code = inc.Attributes.Code
+			}
+		}
+	}
+
+	return res.Data, nil
+}
+
+//https://api.tradecred.com/api/v1/deal_transaction_liquidations?page=1&aasm_state=requested
