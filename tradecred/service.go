@@ -40,7 +40,7 @@ func tokenRefresh(obj *TradeCred) {
 //NewTradeCred builds TradeCred
 func NewTradeCred(config *config.TradeCredConfig) *TradeCred {
 	obj := &TradeCred{config: config, token: ""}
-	go tokenRefresh(obj)
+	// go tokenRefresh(obj)
 	return obj
 }
 
