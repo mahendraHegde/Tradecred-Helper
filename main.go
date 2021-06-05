@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -11,6 +13,7 @@ import (
 	"github.com/mahendraHegde/tradecred-notifier/config"
 	conf "github.com/mahendraHegde/tradecred-notifier/config"
 	"github.com/mahendraHegde/tradecred-notifier/core"
+	"github.com/mahendraHegde/tradecred-notifier/job"
 )
 
 func main() {
@@ -30,6 +33,7 @@ func main() {
 		c.JSON(http.StatusAccepted, map[string]bool{"live": true})
 	})
 	core.RegisterCoreRoutes(r, wire.coreController)
+	go job.ScheduleDealsCheck(context.Background(), time.Minute*1, wire.tradeCredService, wire.callmeBotService)
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 

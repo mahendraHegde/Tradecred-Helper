@@ -36,10 +36,10 @@ func GetFilteredDeals(input GetDealsQS, body Credentials, TradecredService *trad
 	processReponse := func(ctx context.Context, deals []tradecred.Deal, err error) {
 		select {
 		case <-ctx.Done():
-			log.Println("cancelling Get deals :=", ctx.Err())
+			log.Println("[GetFilteredDeals]cancelling Get deals :=", ctx.Err())
 			return
 		default:
-			log.Println("context is not cancelled yet...")
+			log.Println("[GetFilteredDeals]checking response for filter ", input)
 		}
 		if err != nil {
 			ch <- ResErr{Deals: nil, Err: err}
