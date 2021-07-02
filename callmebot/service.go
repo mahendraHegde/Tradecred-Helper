@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/mahendraHegde/tradecred-notifier/config"
 	"github.com/mahendraHegde/tradecred-notifier/errors"
@@ -15,18 +16,27 @@ import (
 )
 
 type CallMeBot struct {
-	config *config.CallMeBot
+	config    *config.CallMeBot
+	sentDeals map[string]bool //dont send same message twice
 }
 
 //NewCallmeBot builds CallMeBot
 func NewCallmeBot(config *config.CallMeBot) *CallMeBot {
-	obj := &CallMeBot{config}
+	obj := &CallMeBot{config, map[string]bool{}}
 	return obj
 }
 
 func (this *CallMeBot) SendWhatsAppMessage(ctx context.Context, deals []tradecred.Deal) error {
 	text := "New Deals"
+	dealsTobeSent := 0
 	for i, deal := range deals {
+		if _, ok := this.sentDeals[deal.Attributes.Code]; ok {
+			log.Println("skipping sending deal to whats app as its already sent :", deal)
+			continue
+		}
+
+		dealsTobeSent++
+
 		t := `
 ` + strconv.Itoa(i+1) + ". " + `
 ` + "code : " + deal.Attributes.Code
@@ -38,6 +48,9 @@ Name : ` + deal.Attributes.Name
 		}
 
 		text += t
+	}
+	if dealsTobeSent <= 0 {
+		return nil
 	}
 	text = url.QueryEscape(text)
 	url := this.config.WhatsApp.Base + "?phone=" + this.config.WhatsApp.Phone + "&text=" + text + "&apikey=" + this.config.WhatsApp.ApiKey
@@ -67,6 +80,14 @@ Name : ` + deal.Attributes.Name
 		log.Println("Failed to parse callmeBot response => ", err)
 		return nil
 	}
-	log.Println("Callmebot response " + string(bodyBytes))
+	stringBody := string(bodyBytes)
+	if !strings.Contains(strings.ToLower(stringBody), "message queued") {
+		log.Println("Callmebot error response " + stringBody)
+	} else {
+		for _, deal := range deals {
+			this.sentDeals[deal.Attributes.Code] = true
+		}
+
+	}
 	return nil
 }
