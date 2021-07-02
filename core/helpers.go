@@ -47,7 +47,7 @@ func GetFilteredDeals(input GetDealsQS, body Credentials, TradecredService *trad
 		}
 		rs := []tradecred.Deal{}
 		for _, deal := range deals {
-			if deal.Attributes.State == "in_progress" && deal.Attributes.Days < float64(input.Days) && deal.Attributes.MinAmount < input.MaxAmount && deal.Attributes.MinAmount > 0 && deal.Attributes.Rate > input.Rate {
+			if (deal.Attributes.State == "in_progress" || deal.Attributes.State == "almost_sold_out") && deal.Attributes.Days < float64(input.Days) && deal.Attributes.MinAmount < input.MaxAmount && deal.Attributes.MinAmount > 0 && deal.Attributes.Rate > input.Rate {
 				rs = append(rs, deal)
 			}
 		}
