@@ -12,10 +12,10 @@ func GetFilteredDeals(input GetDealsQS, body Credentials, TradecredService *trad
 		input.Days = 200
 	}
 	if input.MaxAmount == 0 {
-		input.MaxAmount = 100000
+		input.MaxAmount = 170000
 	}
 	if input.Rate == 0.0 {
-		input.Rate = 11.55
+		input.Rate = 10.00
 	}
 	filterd := []tradecred.Deal{}
 	_, err := TradecredService.UpdateToken(body.Email, body.Password)
