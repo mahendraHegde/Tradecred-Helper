@@ -3,6 +3,7 @@ package callmebot
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -39,7 +40,7 @@ func (this *CallMeBot) SendWhatsAppMessage(ctx context.Context, deals []tradecre
 
 		t := `
 ` + strconv.Itoa(i+1) + ". " + `
-` + "code : " + deal.Attributes.Code
+` + "code : " + deal.Attributes.Code + " " + fmt.Sprint(deal.Attributes.Rate) + "% " + fmt.Sprint(deal.Attributes.MinAmount)
 
 		if deal.Attributes.Name != "" {
 			temp := `
