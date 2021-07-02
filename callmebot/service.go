@@ -3,6 +3,7 @@ package callmebot
 import (
 	"context"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -61,5 +62,11 @@ Name : ` + deal.Attributes.Name
 			Meta:    meta,
 		}
 	}
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Failed to parse callmeBot response => ", err)
+		return nil
+	}
+	log.Println("Callmebot response " + string(bodyBytes))
 	return nil
 }
