@@ -17,7 +17,6 @@ import (
 )
 
 func main() {
-
 	config, err := conf.LoadConfig("./")
 	if err != nil {
 		fmt.Printf("Unable to read config, %v", err)
