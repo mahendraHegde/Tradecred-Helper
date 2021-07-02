@@ -40,7 +40,7 @@ func (this *CallMeBot) SendWhatsAppMessage(ctx context.Context, deals []tradecre
 
 		t := `
 ` + strconv.Itoa(i+1) + ". " + `
-` + "code : " + deal.Attributes.Code + " " + fmt.Sprint(deal.Attributes.Rate) + "% " + fmt.Sprint(deal.Attributes.MinAmount)
+` + "code : " + deal.Attributes.Code + " " + fmt.Sprint(deal.Attributes.Rate) + "% " + fmt.Sprint(deal.Attributes.MinAmount) + " " + fmt.Sprint(deal.Attributes.Days)
 
 		if deal.Attributes.Name != "" {
 			temp := `
