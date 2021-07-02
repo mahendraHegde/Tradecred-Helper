@@ -87,7 +87,9 @@ Name : ` + deal.Attributes.Name
 		for _, deal := range deals {
 			this.sentDeals[deal.Attributes.Code] = true
 		}
-
+		logMsg := strings.ReplaceAll(stringBody, this.config.WhatsApp.Phone, "###")
+		logMsg = strings.ReplaceAll(logMsg, this.config.WhatsApp.ApiKey, "***")
+		log.Println("Callmebot wahts app message sent =>" + logMsg)
 	}
 	return nil
 }
