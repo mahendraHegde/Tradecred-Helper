@@ -13,6 +13,7 @@ dbconfig:
 tradecredconfig:
   base: test
   refreshtoken: test
+  dealscheckschedule: 10
 callmebot:
   whatsapp:
     apikey: test

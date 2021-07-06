@@ -26,6 +26,7 @@ type CallMeBot struct {
 //TradeCredConfig exported
 type TradeCredConfig struct {
 	Base, RefreshToken string
+	DealsCheckSchedule int64
 }
 
 //DBConfig exported

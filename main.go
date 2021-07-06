@@ -32,7 +32,7 @@ func main() {
 		c.JSON(http.StatusAccepted, map[string]bool{"live": true})
 	})
 	core.RegisterCoreRoutes(r, wire.coreController)
-	go job.ScheduleDealsCheck(context.Background(), time.Minute*15, wire.tradeCredService, wire.callmeBotService)
+	go job.ScheduleDealsCheck(context.Background(), time.Minute*time.Duration(config.TradeCredConfig.DealsCheckSchedule), wire.tradeCredService, wire.callmeBotService)
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
