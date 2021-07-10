@@ -9,8 +9,9 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-
 	"github.com/mahendraHegde/tradecred-notifier/config"
+	_ "github.com/mahendraHegde/tradecred-notifier/tz"
+
 	conf "github.com/mahendraHegde/tradecred-notifier/config"
 	"github.com/mahendraHegde/tradecred-notifier/core"
 	"github.com/mahendraHegde/tradecred-notifier/job"
