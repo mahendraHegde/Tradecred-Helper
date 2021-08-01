@@ -22,7 +22,6 @@ func main() {
 	if err != nil {
 		fmt.Printf("Unable to read config, %v", err)
 	}
-
 	r := gin.Default()
 	// addCorsRules(r, config)
 	wire, err := buildDependencies(config, r)

@@ -1,0 +1,28 @@
+FROM golang:buster as builder
+ADD ./ ./
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
+ENV SERVER_CORS=$SERVER_CORS
+ENV TRADECREDCONFIG_BASE=$TRADECREDCONFIG_BASE
+ENV SERVER_APIKEY=$SERVER_APIKEY
+ENV CALLMEBOT_WHATSAPP_APIKEY=$CALLMEBOT_WHATSAPP_APIKEY
+ENV CALLMEBOT_WHATSAPP_PHONE=$CALLMEBOT_WHATSAPP_PHONE
+ENV TRADECREDCONFIG_DEALSCHECKSCHEDULE=$TRADECREDCONFIG_DEALSCHECKSCHEDULE
+RUN unset GOPATH && \
+ go env GO111MODULE=on && \
+ go env -w GOPRIVATE=github.com/mahendraHegde/* &&\
+ apt update && apt install git && \
+ git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/mahendraHegde".insteadOf "https://github.com/mahendraHegde" && \
+ go get
+ ### debug helpers ###
+RUN rm -rf $GOPATH/go.mod &&\
+ go get github.com/uudashr/gopkgs/v2/cmd/gopkgs &&\
+ go get github.com/ramya-rao-a/go-outline &&\
+ go get github.com/cweill/gotests/gotests &&\
+ go get github.com/fatih/gomodifytags &&\
+ go get github.com/josharian/impl &&\
+ go get github.com/haya14busa/goplay/cmd/goplay &&\
+ go get github.com/go-delve/delve/cmd/dlv &&\
+ go get github.com/go-delve/delve/cmd/dlv@master &&\
+ go get honnef.co/go/tools/cmd/staticcheck &&\
+ go get golang.org/x/tools/gopls@v0.7.1-pre.1
+EXPOSE 8080

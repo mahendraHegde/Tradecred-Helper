@@ -65,13 +65,20 @@ func GetFilteredDeals(input GetDealsQS, body Credentials, TradecredService *trad
 		deals, err := TradecredService.GetLiquidationRequests(ctx)
 		processReponse(ctx, deals, err)
 	}(ctx)
-
+	errs := []error{}
 	for p := 0; p <= pages; p++ {
 		rs := <-ch
 		if rs.Err != nil {
-			return nil, rs.Err
+			errs = append(errs, rs.Err)
+		} else {
+			filterd = append(filterd, rs.Deals...)
 		}
-		filterd = append(filterd, rs.Deals...)
 	}
-	return filterd, nil
+	if len(filterd) > 0 {
+		if len(errs) > 0 {
+			log.Println("[GetFilteredDeals] Some deal fetch failed", errs)
+		}
+		return filterd, nil
+	}
+	return nil, errs[0]
 }
